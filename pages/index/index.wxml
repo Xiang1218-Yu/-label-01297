@@ -1,0 +1,80 @@
+<view class="container">
+  <view class="header">
+    <text class="title">今日搬砖进度</text>
+    <text class="subtitle">Time is Money</text>
+  </view>
+
+  <view class="card config-card" wx:if="{{!isRunning}}">
+    <view class="form-item">
+      <view class="label-row">
+        <text class="label">日薪 (元)</text>
+      </view>
+      <input type="digit" class="input-money" placeholder="0.00" bindinput="bindSalaryInput" value="{{salary}}" />
+    </view>
+
+    <view class="divider"></view>
+
+    <view class="form-item">
+      <text class="label">上班时间</text>
+      <picker mode="time" value="{{startTime}}" bindchange="bindStartTimeChange">
+        <view class="picker-display">{{startTime}}</view>
+      </picker>
+    </view>
+
+    <view class="form-item">
+      <text class="label">下班时间</text>
+      <picker mode="time" value="{{endTime}}" bindchange="bindEndTimeChange">
+        <view class="picker-display">{{endTime}}</view>
+      </picker>
+    </view>
+
+    <view class="presets">
+      <block wx:for="{{presets}}" wx:key="*this">
+        <view class="chip {{endTime === item ? 'active' : ''}}" bindtap="selectPreset" data-time="{{item}}">{{item}}</view>
+      </block>
+    </view>
+
+    <button class="btn-primary" bindtap="startTimer" hover-class="btn-hover">开始倒计时</button>
+  </view>
+
+  <view class="card dashboard-card" wx:else>
+    <view class="status-bar">
+      <view class="tag {{isOvertime ? 'tag-danger' : 'tag-success'}}">
+        <text class="tag-icon">{{isOvertime ? '⚠️' : '🔨'}}</text>
+        <text class="tag-text">{{isOvertime ? '加班中' : '搬砖中'}}</text>
+      </view>
+      <view class="reset-btn" bindtap="stopTimer">
+         <text class="reset-icon">↺</text>
+      </view>
+    </view>
+
+    <view class="timer-display">
+      <text class="timer-label">{{isOvertime ? '已加班时长' : '距离下班还有'}}</text>
+      <text class="timer-number {{isOvertime ? 'text-danger' : ''}}">{{countdownStr}}</text>
+    </view>
+
+    <view class="money-display">
+      <text class="money-label">今日已赚 (元)</text>
+      <view class="money-amount-row">
+        <text class="symbol">¥</text>
+        <text class="amount {{tickAnimation ? 'pulse' : ''}}">{{earnedMoney}}</text>
+      </view>
+    </view>
+
+    <view class="loss-display" wx:if="{{isOvertime}}">
+      <view class="loss-card">
+        <view class="flex-row">
+            <text class="loss-icon">💸</text>
+            <text class="loss-label">亏了工资</text>
+        </view>
+        <text class="loss-amount {{tickAnimation ? 'pulse-red' : ''}}">- ¥{{lossMoney}}</text>
+      </view>
+    </view>
+
+    <button class="btn-outline" bindtap="stopTimer" hover-class="btn-hover">调整设置</button>
+  </view>
+
+  <view class="footer">
+    <text class="footer-text">加油，打工人！</text>
+  </view>
+</view>
