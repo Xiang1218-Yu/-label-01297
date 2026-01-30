@@ -31,10 +31,23 @@ Page({
   },
 
   bindSalaryInput(e) {
+    let value = e.detail.value;
+    
+    value = value.replace(/[^\d.]/g, '');
+    
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    if (parts.length === 2 && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+    
     this.setData({
-      salary: e.detail.value
+      salary: value
     });
-    wx.setStorageSync('salary', e.detail.value);
+    wx.setStorageSync('salary', value);
   },
 
   bindStartTimeChange(e) {
