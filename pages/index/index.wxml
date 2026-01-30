@@ -43,8 +43,8 @@
         <text class="tag-icon">{{isOvertime ? '⚠️' : '🔨'}}</text>
         <text class="tag-text">{{isOvertime ? '加班中' : '搬砖中'}}</text>
       </view>
-      <view class="reset-btn" bindtap="stopTimer">
-         <text class="reset-icon">↺</text>
+      <view class="reset-btn" bindtap="goBack">
+         <text class="reset-icon">返回</text>
       </view>
     </view>
 

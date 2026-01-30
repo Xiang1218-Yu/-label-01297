@@ -95,6 +95,20 @@ Page({
     }, 1000);
   },
 
+  goBack() {
+    if (this.timer) {
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+    this.setData({
+      isRunning: false,
+      isOvertime: false,
+      countdownStr: '00:00:00',
+      earnedMoney: '0.00',
+      lossMoney: '0.00'
+    });
+  },
+
   stopTimer() {
     if (this.timer) {
       clearInterval(this.timer);
@@ -147,8 +161,8 @@ Page({
     this.setData({
       isOvertime,
       countdownStr,
-      earnedMoney: earned.toFixed(4),
-      lossMoney: loss.toFixed(4),
+      earnedMoney: earned.toFixed(2),
+      lossMoney: loss.toFixed(2),
       tickAnimation: true
     });
     

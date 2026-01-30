@@ -158,8 +158,9 @@
 }
 
 .reset-icon {
-  font-size: 40rpx;
+  font-size: 28rpx;
   color: #666666;
+  font-weight: 500;
 }
 
 .timer-display {
