@@ -11,16 +11,11 @@
 
 ## Services
 
-本项目主要包含以下核心服务逻辑（运行在小程序前端）：
+本项目为纯前端小程序，核心逻辑均在首页 `pages/index/index.js` 中实现：
 
-*   **TimeService (时间服务)**:
-    *   管理当前时间与目标下班时间的计算。
-    *   提供倒计时格式化功能 (HH:mm:ss)。
-    *   检测是否处于加班状态。
-*   **SalaryService (薪资服务)**:
-    *   基于用户输入的日薪计算每秒薪资率。
-    *   实时累加计算“已赚取”工资。
-    *   实时累加计算“亏损”工资（加班时间）。
+*   **时间与倒计时**：`getTodayDateWithTime` 将“时:分”转为当日 Date；`formatDuration` 将秒数格式化为 HH:mm:ss；`updateState` 每秒根据当前时间与上下班时间计算是否加班、剩余/加班时长。
+*   **薪资计算**：在 `updateState` 内根据日薪与工作时长算出每秒薪资率，按已工作时长累加“今日已赚”，超过下班时间后按加班秒数累加“亏了工资”。
+*   **输入与状态**：日薪、上下班时间通过 `bindSalaryInput` / `bindStartTimeChange` / `bindEndTimeChange` 与选择器写入 data；开始/停止倒计时由 `startTimer`、`goBack`、`stopTimer` 控制。
 
 ## 测试账号
 
@@ -51,11 +46,9 @@
 ├── project.config.json # 项目配置文件
 ├── pages               # 页面目录
 │   └── index           # 首页
-│       ├── index.js    # 首页逻辑
+│       ├── index.js    # 首页逻辑（倒计时、薪资计算、输入校验）
 │       ├── index.json  # 首页配置
 │       ├── index.wxml  # 首页结构
 │       └── index.wxss  # 首页样式
-├── utils               # 工具库
-│   └── util.js         # 时间格式化等工具
 └── README.md           # 项目说明
 ```
