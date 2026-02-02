@@ -3,6 +3,5 @@ App({
     console.log('App Launch');
   },
   globalData: {
-    userInfo: null
   }
 })
