@@ -3,6 +3,38 @@
   padding: 0 16rpx;
 }
 
+.mode-switch {
+  display: flex;
+  background: #f0f2f5;
+  border-radius: 12rpx;
+  padding: 6rpx;
+  margin-bottom: 32rpx;
+}
+
+.mode-item {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  border-radius: 8rpx;
+  transition: all 0.3s;
+}
+
+.mode-item.active {
+  background: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+}
+
+.mode-text {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #666;
+}
+
+.mode-item.active .mode-text {
+  color: #2f80ed;
+  font-weight: bold;
+}
+
 .title {
   font-size: 48rpx;
   font-weight: bold;
@@ -37,6 +69,31 @@
   height: 80rpx;
   border-bottom: 2rpx solid #eee;
   padding-bottom: 8rpx;
+}
+
+.input-small {
+  font-size: 36rpx;
+}
+
+.calculated-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20rpx;
+  background: #f0f7ff;
+  border-radius: 12rpx;
+  margin-bottom: 32rpx;
+}
+
+.calculated-label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.calculated-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2f80ed;
 }
 
 .picker-display {

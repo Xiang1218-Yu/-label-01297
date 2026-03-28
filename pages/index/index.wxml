@@ -5,11 +5,41 @@
   </view>
 
   <view class="card config-card" wx:if="{{!isRunning}}">
-    <view class="form-item">
+    <view class="mode-switch">
+      <view class="mode-item {{salaryMode === 'daily' ? 'active' : ''}}" bindtap="changeSalaryMode" data-mode="daily">
+        <text class="mode-text">日薪</text>
+      </view>
+      <view class="mode-item {{salaryMode === 'monthly' ? 'active' : ''}}" bindtap="changeSalaryMode" data-mode="monthly">
+        <text class="mode-text">月薪</text>
+      </view>
+    </view>
+
+    <view class="form-item" wx:if="{{salaryMode === 'daily'}}">
       <view class="label-row">
         <text class="label">日薪 (元)</text>
       </view>
       <input type="digit" class="input-money" placeholder="0.00" bindinput="bindSalaryInput" value="{{salary}}" />
+    </view>
+
+    <view wx:if="{{salaryMode === 'monthly'}}">
+      <view class="form-item">
+        <view class="label-row">
+          <text class="label">月薪 (元)</text>
+        </view>
+        <input type="digit" class="input-money" placeholder="0.00" bindinput="bindMonthlySalaryInput" value="{{monthlySalary}}" />
+      </view>
+
+      <view class="form-item">
+        <view class="label-row">
+          <text class="label">月工作天数</text>
+        </view>
+        <input type="number" class="input-money input-small" placeholder="22" bindinput="bindWorkDaysPerMonthInput" value="{{workDaysPerMonth}}" />
+      </view>
+
+      <view class="calculated-info">
+        <text class="calculated-label">自动计算日薪: </text>
+        <text class="calculated-value">¥{{salary || '0.00'}}</text>
+      </view>
     </view>
 
     <view class="divider"></view>
