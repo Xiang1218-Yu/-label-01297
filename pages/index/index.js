@@ -1,6 +1,9 @@
 Page({
   data: {
-    salary: '',
+    salaryMode: 'daily', // 'daily' or 'monthly'
+    dailySalary: '',
+    monthlySalary: '',
+    calculatedDailySalary: '',
     startTime: '09:00',
     endTime: '18:00',
     presets: ['17:00', '17:30', '18:00', '18:30', '19:00'],
@@ -18,9 +21,23 @@ Page({
   timer: null,
 
   onLoad() {
-    const savedSalary = wx.getStorageSync('salary');
-    if (savedSalary) {
-      this.setData({ salary: savedSalary });
+    const savedSalaryMode = wx.getStorageSync('salaryMode');
+    const savedDailySalary = wx.getStorageSync('dailySalary');
+    const savedMonthlySalary = wx.getStorageSync('monthlySalary');
+    
+    const calculatedDailySalary = savedMonthlySalary ? (parseFloat(savedMonthlySalary) / 22).toFixed(2) : '';
+    
+    if (savedSalaryMode) {
+      this.setData({ salaryMode: savedSalaryMode });
+    }
+    if (savedDailySalary) {
+      this.setData({ dailySalary: savedDailySalary });
+    }
+    if (savedMonthlySalary) {
+      this.setData({ 
+        monthlySalary: savedMonthlySalary,
+        calculatedDailySalary: calculatedDailySalary
+      });
     }
   },
 
@@ -28,7 +45,13 @@ Page({
     this.stopTimer();
   },
 
-  bindSalaryInput(e) {
+  switchSalaryMode(e) {
+    const mode = e.currentTarget.dataset.mode;
+    this.setData({ salaryMode: mode });
+    wx.setStorageSync('salaryMode', mode);
+  },
+
+  bindDailySalaryInput(e) {
     let value = e.detail.value;
     
     value = value.replace(/[^\d.]/g, '');
@@ -43,9 +66,41 @@ Page({
     }
     
     this.setData({
-      salary: value
+      dailySalary: value
     });
-    wx.setStorageSync('salary', value);
+    wx.setStorageSync('dailySalary', value);
+  },
+
+  bindMonthlySalaryInput(e) {
+    let value = e.detail.value;
+    
+    value = value.replace(/[^\d.]/g, '');
+    
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    if (parts.length === 2 && parts[1].length > 2) {
+      value = parts[0] + '.' + parts[1].substring(0, 2);
+    }
+    
+    const calculatedDailySalary = value ? (parseFloat(value) / 22).toFixed(2) : '';
+    
+    this.setData({
+      monthlySalary: value,
+      calculatedDailySalary: calculatedDailySalary
+    });
+    wx.setStorageSync('monthlySalary', value);
+  },
+
+  calculateDailySalary() {
+    if (this.data.salaryMode === 'monthly' && this.data.monthlySalary) {
+      const monthly = parseFloat(this.data.monthlySalary);
+      const daily = monthly / 22; // 假设每月工作22天
+      return daily.toFixed(2);
+    }
+    return this.data.dailySalary;
   },
 
   bindStartTimeChange(e) {
@@ -79,9 +134,11 @@ Page({
   },
 
   startTimer() {
-    if (!this.data.salary) {
+    const salary = this.calculateDailySalary();
+    if (!salary) {
+      const message = this.data.salaryMode === 'monthly' ? '请输入月薪' : '请输入日薪';
       wx.showToast({
-        title: '请输入日薪',
+        title: message,
         icon: 'none'
       });
       return;
@@ -139,7 +196,7 @@ Page({
     const start = this.getTodayDateWithTime(this.data.startTime);
     const end = this.getTodayDateWithTime(this.data.endTime);
     
-    const salary = parseFloat(this.data.salary);
+    const salary = parseFloat(this.calculateDailySalary());
     const totalWorkSeconds = (end - start) / 1000;
     const wagePerSecond = salary / totalWorkSeconds;
 

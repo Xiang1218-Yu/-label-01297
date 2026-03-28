@@ -5,11 +5,30 @@
   </view>
 
   <view class="card config-card" wx:if="{{!isRunning}}">
-    <view class="form-item">
+    <view class="salary-mode-tabs">
+      <view class="tab {{salaryMode === 'daily' ? 'active' : ''}}" bindtap="switchSalaryMode" data-mode="daily">
+        <text class="tab-text">日薪</text>
+      </view>
+      <view class="tab {{salaryMode === 'monthly' ? 'active' : ''}}" bindtap="switchSalaryMode" data-mode="monthly">
+        <text class="tab-text">月薪</text>
+      </view>
+    </view>
+    
+    <view class="form-item" wx:if="{{salaryMode === 'daily'}}">
       <view class="label-row">
         <text class="label">日薪 (元)</text>
       </view>
-      <input type="digit" class="input-money" placeholder="0.00" bindinput="bindSalaryInput" value="{{salary}}" />
+      <input type="digit" class="input-money" placeholder="0.00" bindinput="bindDailySalaryInput" value="{{dailySalary}}" />
+    </view>
+    
+    <view class="form-item" wx:if="{{salaryMode === 'monthly'}}">
+      <view class="label-row">
+        <text class="label">月薪 (元)</text>
+      </view>
+      <input type="digit" class="input-money" placeholder="0.00" bindinput="bindMonthlySalaryInput" value="{{monthlySalary}}" />
+      <view class="daily-salary-hint" wx:if="{{calculatedDailySalary}}">
+        <text class="hint-text">日薪: ¥{{calculatedDailySalary}} (按22天/月计算)</text>
+      </view>
     </view>
 
     <view class="divider"></view>
