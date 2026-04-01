@@ -189,5 +189,50 @@ Page({
     
     const pad = n => n.toString().padStart(2, '0');
     return `${pad(h)}:${pad(m)}:${pad(s)}`;
+  },
+
+  // 下班打卡功能 - 记录倒计时数据
+  checkOut() {
+    // 获取当前时间作为下班时间点
+    const now = new Date();
+    const offWorkTime = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    
+    // 计算当日盈亏情况：实际赚取金额 - 亏损（加班亏的工资）
+    const earned = parseFloat(this.data.earnedMoney);
+    const loss = parseFloat(this.data.lossMoney);
+    const profitLoss = (earned - loss).toFixed(2);
+    
+    // 构建下班记录，包含5个固定字段
+    const record = {
+      id: Date.now().toString(),
+      date: now.toLocaleDateString('zh-CN'),
+      dailySalary: this.data.salary,
+      profitLoss: profitLoss,
+      offWorkTime: offWorkTime
+    };
+
+    // 从本地存储获取已有历史记录
+    const historyRecords = wx.getStorageSync('workHistory') || [];
+    // 将新记录添加到数组开头
+    historyRecords.unshift(record);
+    // 保存到本地存储
+    wx.setStorageSync('workHistory', historyRecords);
+
+    // 停止计时器并重置状态
+    this.stopTimer();
+
+    // 提示用户打卡成功
+    wx.showToast({
+      title: '下班打卡成功',
+      icon: 'success',
+      duration: 2000
+    });
+  },
+
+  // 跳转到历史记录页面
+  goToHistory() {
+    wx.navigateTo({
+      url: '/pages/history/history'
+    });
   }
 })
