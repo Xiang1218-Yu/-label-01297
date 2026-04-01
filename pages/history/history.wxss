@@ -1,0 +1,129 @@
+.container {
+  min-height: 100vh;
+  padding: 40rpx 32rpx;
+  background: #f5f7fa;
+}
+
+.header {
+  margin-bottom: 40rpx;
+}
+
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333333;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #999999;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #999999;
+  margin-bottom: 16rpx;
+  font-weight: 500;
+}
+
+.empty-hint {
+  font-size: 26rpx;
+  color: #cccccc;
+}
+
+.record-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.record-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.04);
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.record-date {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.delete-btn {
+  padding: 10rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-text {
+  font-size: 28rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+.record-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.record-label {
+  font-size: 28rpx;
+  color: #666666;
+}
+
+.record-value {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333333;
+}
+
+.record-value.profit {
+  color: #52c41a;
+}
+
+.record-value.loss {
+  color: #ff4d4f;
+}
+
+.btn-clear {
+  margin-top: 40rpx;
+  width: 100%;
+  background: #fff;
+  color: #ff4d4f;
+  border: 2rpx solid #ffccc7;
+  border-radius: 48rpx;
+  font-size: 28rpx;
+  padding: 20rpx 0;
+}
+
+.btn-clear::after {
+  border: none;
+}
