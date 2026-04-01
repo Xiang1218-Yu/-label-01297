@@ -4,6 +4,12 @@
     <text class="subtitle">Time is Money</text>
   </view>
 
+  <view class="history-entry" bindtap="goToHistory">
+    <text class="history-icon">📋</text>
+    <text class="history-text">历史记录</text>
+    <text class="history-arrow">></text>
+  </view>
+
   <view class="card config-card" wx:if="{{!isRunning}}">
     <view class="form-item">
       <view class="label-row">
@@ -71,6 +77,7 @@
       </view>
     </view>
 
+    <button class="btn-primary" bindtap="clockOut" hover-class="btn-hover" style="margin-bottom: 16rpx;">下班打卡</button>
     <button class="btn-outline" bindtap="stopTimer" hover-class="btn-hover">调整设置</button>
   </view>
 
