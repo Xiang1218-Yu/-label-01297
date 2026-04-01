@@ -35,6 +35,10 @@
     </view>
 
     <button class="btn-primary" bindtap="startTimer" hover-class="btn-hover">开始倒计时</button>
+    <view class="history-entry" bindtap="goToHistory">
+      <text class="history-text">📋 查看历史记录</text>
+      <text class="history-arrow">›</text>
+    </view>
   </view>
 
   <view class="card dashboard-card" wx:else>
@@ -71,6 +75,7 @@
       </view>
     </view>
 
+    <button class="btn-success" bindtap="checkOut" hover-class="btn-hover">下班打卡</button>
     <button class="btn-outline" bindtap="stopTimer" hover-class="btn-hover">调整设置</button>
   </view>
 
