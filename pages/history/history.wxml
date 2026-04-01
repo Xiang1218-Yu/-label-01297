@@ -1,0 +1,54 @@
+<view class="container">
+  <view class="header">
+    <text class="title">打卡记录</text>
+    <text class="subtitle">查看历史下班打卡记录</text>
+  </view>
+
+  <view wx:if="{{records.length === 0}}" class="card empty-state">
+    <text class="empty-icon">📝</text>
+    <text class="empty-text">暂无打卡记录</text>
+  </view>
+
+  <view wx:else>
+    <view class="card record-card" wx:for="{{records}}" wx:key="id">
+      <view class="record-header">
+        <text class="record-date">{{item.date}}</text>
+        <view class="header-actions">
+          <view class="tag tag-success">
+            <text class="tag-icon">✅</text>
+            <text class="tag-text">{{item.clockOutTime}}</text>
+          </view>
+          <view class="delete-btn" bindtap="deleteRecord" data-id="{{item.id}}" hover-class="btn-hover">
+            <text class="delete-icon">🗑️</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="divider"></view>
+      
+      <view class="record-body">
+        <view class="money-display">
+          <text class="money-label">日薪</text>
+          <view class="money-amount-row">
+            <text class="symbol">¥</text>
+            <text class="amount">{{item.dailySalary}}</text>
+          </view>
+        </view>
+        
+        <view class="profit-display {{parseFloat(item.profitOrLoss) >= 0 ? 'profit-positive' : 'profit-negative'}}">
+          <view class="profit-card">
+            <view class="flex-row">
+              <text class="profit-icon">{{parseFloat(item.profitOrLoss) >= 0 ? '💰' : '💸'}}</text>
+              <text class="profit-label">当日盈亏</text>
+            </view>
+            <text class="profit-amount">{{parseFloat(item.profitOrLoss) >= 0 ? '+' : ''}}¥{{item.profitOrLoss}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{records.length > 0}}" class="footer">
+    <button class="btn-outline" bindtap="clearAllRecords" hover-class="btn-hover">清空所有记录</button>
+  </view>
+</view>

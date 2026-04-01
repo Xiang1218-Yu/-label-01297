@@ -189,5 +189,50 @@ Page({
     
     const pad = n => n.toString().padStart(2, '0');
     return `${pad(h)}:${pad(m)}:${pad(s)}`;
+  },
+
+  // 跳转到历史记录页面
+  goToHistory() {
+    wx.navigateTo({
+      url: '/pages/history/history'
+    });
+  },
+
+  // 下班打卡功能
+  clockOut() {
+    const now = new Date();
+    
+    // 计算当日盈亏情况：如果有加班则为负，否则为正
+    const profitOrLoss = this.data.isOvertime 
+      ? (parseFloat(this.data.earnedMoney) - parseFloat(this.data.lossMoney)).toFixed(2)
+      : this.data.earnedMoney;
+    
+    // 构建下班记录对象，包含5个固定字段
+    const record = {
+      id: Date.now(), // 唯一ID
+      dailySalary: this.data.salary, // 日薪
+      profitOrLoss: profitOrLoss, // 当日盈亏情况
+      clockOutTime: now.toLocaleTimeString('zh-CN', { hour12: false }), // 下班时间点
+      date: now.toLocaleDateString('zh-CN') // 日期
+    };
+    
+    // 从本地存储获取历史记录
+    let historyRecords = wx.getStorageSync('historyRecords') || [];
+    
+    // 将新记录添加到数组开头
+    historyRecords.unshift(record);
+    
+    // 保存到本地存储
+    wx.setStorageSync('historyRecords', historyRecords);
+    
+    // 停止计时
+    this.stopTimer();
+    
+    // 显示提示
+    wx.showToast({
+      title: '下班打卡成功',
+      icon: 'success',
+      duration: 2000
+    });
   }
 })
