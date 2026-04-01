@@ -134,6 +134,53 @@ Page({
     });
   },
 
+  // 下班打卡功能
+  checkOut() {
+    // 获取当前时间
+    const now = new Date();
+    
+    // 计算当日盈亏：实际收入 - 标准日薪，正值表示盈利（早下班），负值表示亏损（加班）
+    const dailySalary = parseFloat(this.data.salary);
+    const actualEarned = parseFloat(this.data.earnedMoney);
+    const actualLoss = parseFloat(this.data.lossMoney);
+    const profitLoss = (actualEarned - actualLoss - dailySalary).toFixed(2);
+    
+    // 格式化下班时间点
+    const checkOutTime = now.toLocaleTimeString('zh-CN', { hour12: false });
+    
+    // 格式化日期
+    const date = now.toLocaleDateString('zh-CN');
+    
+    // 生成唯一记录ID
+    const id = Date.now().toString();
+
+    // 构建下班记录，包含5个固定字段
+    const record = {
+      id: id,                    // 记录唯一ID
+      date: date,                // 日期
+      dailySalary: dailySalary,  // 日薪
+      profitLoss: profitLoss,    // 当日盈亏情况
+      checkOutTime: checkOutTime // 下班时间点
+    };
+
+    // 从本地存储获取历史记录，没有则初始化空数组
+    const records = wx.getStorageSync('checkOutRecords') || [];
+    // 将新记录添加到数组开头，最新的在最前面
+    records.unshift(record);
+    // 保存到本地存储
+    wx.setStorageSync('checkOutRecords', records);
+
+    // 停止计时器
+    this.stopTimer();
+
+    // 提示用户打卡成功
+    wx.showToast({
+      title: '下班打卡成功！',
+      icon: 'success',
+      duration: 2000
+    });
+  },
+
   updateState() {
     const now = new Date();
     const start = this.getTodayDateWithTime(this.data.startTime);
@@ -189,5 +236,12 @@ Page({
     
     const pad = n => n.toString().padStart(2, '0');
     return `${pad(h)}:${pad(m)}:${pad(s)}`;
+  },
+
+  // 跳转到历史记录页面
+  goToHistory() {
+    wx.navigateTo({
+      url: '/pages/history/history'
+    });
   }
 })
