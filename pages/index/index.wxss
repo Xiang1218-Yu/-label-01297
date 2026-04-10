@@ -22,6 +22,63 @@
 
 .label-row {
   margin-bottom: 16rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.salaryConfigBtn {
+  display: flex;
+  align-items: center;
+  padding: 8rpx 16rpx;
+  background: #f0f7ff;
+  border-radius: 24rpx;
+}
+
+.salaryConfigBtn:active {
+  background: #e6f0ff;
+}
+
+.configIcon {
+  font-size: 24rpx;
+  margin-right: 6rpx;
+}
+
+.configText {
+  font-size: 24rpx;
+  color: #2f80ed;
+}
+
+.salaryComponentsPreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 16rpx;
+  margin-bottom: 8rpx;
+}
+
+.componentTag {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 20rpx;
+  background: #f8f9fa;
+  border-radius: 28rpx;
+  gap: 8rpx;
+}
+
+.tagIcon {
+  font-size: 24rpx;
+}
+
+.tagName {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.tagAmount {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
 }
 
 .label {
@@ -268,6 +325,68 @@
 
 .pulse-red {
   animation: pulse-red 0.2s ease-in-out;
+}
+
+/* 详细薪资构成展示 */
+.salaryComponentsDetail {
+  background: #f8f9fa;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-top: 24rpx;
+}
+
+.detailTitle {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 16rpx;
+  text-align: center;
+}
+
+.detailList {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background: #fff;
+  border-radius: 12rpx;
+}
+
+.detailLeft {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.detailIcon {
+  font-size: 32rpx;
+}
+
+.detailName {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.detailRight {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.detailCurrent {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2f80ed;
+}
+
+.detailOriginal {
+  font-size: 24rpx;
+  color: #999;
 }
 
 .footer {
