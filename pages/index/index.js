@@ -1,6 +1,10 @@
 Page({
   data: {
-    salary: '',
+    basicSalary: '',
+    performanceBonus: '',
+    allowance: '',
+    totalSalary: '0.00',
+    
     startTime: '09:00',
     endTime: '18:00',
     presets: ['17:00', '17:30', '18:00', '18:30', '19:00'],
@@ -11,26 +15,43 @@ Page({
     countdownStr: '00:00:00',
     earnedMoney: '0.00',
     lossMoney: '0.00',
+    earnedBasic: '0.00',
+    earnedPerformance: '0.00',
+    earnedAllowance: '0.00',
     
-    tickAnimation: false
+    tickAnimation: false,
+    
+    showSalaryDetail: true,
+    performanceShow: false,
+    allowanceShow: false
   },
 
   timer: null,
 
   onLoad() {
-    const savedSalary = wx.getStorageSync('salary');
-    if (savedSalary) {
-      this.setData({ salary: savedSalary });
+    const savedBasicSalary = wx.getStorageSync('basicSalary');
+    const savedPerformanceBonus = wx.getStorageSync('performanceBonus');
+    const savedAllowance = wx.getStorageSync('allowance');
+    
+    if (savedBasicSalary) {
+      this.setData({ basicSalary: savedBasicSalary });
     }
+    if (savedPerformanceBonus) {
+      this.setData({ performanceBonus: savedPerformanceBonus });
+    }
+    if (savedAllowance) {
+      this.setData({ allowance: savedAllowance });
+    }
+    // 初始化薪资总计和显示标志
+    this.updateTotalSalary();
+    this.updateShowFlags();
   },
 
   onUnload() {
     this.stopTimer();
   },
 
-  bindSalaryInput(e) {
-    let value = e.detail.value;
-    
+  sanitizeMoneyValue(value) {
     value = value.replace(/[^\d.]/g, '');
     
     const parts = value.split('.');
@@ -42,10 +63,60 @@ Page({
       value = parts[0] + '.' + parts[1].substring(0, 2);
     }
     
+    return value;
+  },
+
+  bindBasicSalaryInput(e) {
+    const value = this.sanitizeMoneyValue(e.detail.value);
+    this.setData({ basicSalary: value });
+    wx.setStorageSync('basicSalary', value);
+    this.updateTotalSalary();
+  },
+
+  bindPerformanceBonusInput(e) {
+    const value = this.sanitizeMoneyValue(e.detail.value);
+    this.setData({ performanceBonus: value });
+    wx.setStorageSync('performanceBonus', value);
+    this.updateTotalSalary();
+    this.updateShowFlags();  // 更新绩效显示标志
+  },
+
+  bindAllowanceInput(e) {
+    const value = this.sanitizeMoneyValue(e.detail.value);
+    this.setData({ allowance: value });
+    wx.setStorageSync('allowance', value);
+    this.updateTotalSalary();
+    this.updateShowFlags();  // 更新补贴显示标志
+  },
+
+  toggleSalaryDetail() {
     this.setData({
-      salary: value
+      showSalaryDetail: !this.data.showSalaryDetail
     });
-    wx.setStorageSync('salary', value);
+  },
+
+  getTotalSalary() {
+    const basic = parseFloat(this.data.basicSalary) || 0;
+    const performance = parseFloat(this.data.performanceBonus) || 0;
+    const allowance = parseFloat(this.data.allowance) || 0;
+    return basic + performance + allowance;
+  },
+
+  updateTotalSalary() {
+    const total = this.getTotalSalary();
+    this.setData({
+      totalSalary: total.toFixed(2)
+    });
+  },
+
+  // 更新薪资构成显示标志（解决WXML不支持parseFloat的问题）
+  updateShowFlags() {
+    const performance = parseFloat(this.data.performanceBonus) || 0;
+    const allowance = parseFloat(this.data.allowance) || 0;
+    this.setData({
+      performanceShow: performance > 0,
+      allowanceShow: allowance > 0
+    });
   },
 
   bindStartTimeChange(e) {
@@ -79,9 +150,10 @@ Page({
   },
 
   startTimer() {
-    if (!this.data.salary) {
+    const totalSalary = this.getTotalSalary();
+    if (!totalSalary) {
       wx.showToast({
-        title: '请输入日薪',
+        title: '请输入至少一项薪资构成',
         icon: 'none'
       });
       return;
@@ -116,7 +188,10 @@ Page({
       isOvertime: false,
       countdownStr: '00:00:00',
       earnedMoney: '0.00',
-      lossMoney: '0.00'
+      lossMoney: '0.00',
+      earnedBasic: '0.00',
+      earnedPerformance: '0.00',
+      earnedAllowance: '0.00'
     });
   },
 
@@ -130,7 +205,10 @@ Page({
       isOvertime: false,
       countdownStr: '00:00:00',
       earnedMoney: '0.00',
-      lossMoney: '0.00'
+      lossMoney: '0.00',
+      earnedBasic: '0.00',
+      earnedPerformance: '0.00',
+      earnedAllowance: '0.00'
     });
   },
 
@@ -139,10 +217,12 @@ Page({
     const start = this.getTodayDateWithTime(this.data.startTime);
     const end = this.getTodayDateWithTime(this.data.endTime);
     
-    const salary = parseFloat(this.data.salary);
+    // 计算薪资总额和每秒工资
+    const totalSalary = this.getTotalSalary();
     const totalWorkSeconds = (end - start) / 1000;
-    const wagePerSecond = salary / totalWorkSeconds;
+    const wagePerSecond = totalSalary / totalWorkSeconds;
 
+    // 计算当前时间距离上下班的差值（秒）
     const diffToEnd = (end - now) / 1000;
     const diffFromStart = (now - start) / 1000;
 
@@ -151,11 +231,13 @@ Page({
     let earned = 0;
     let loss = 0;
 
+    // 判断是否在工作时间内，计算已赚金额
     if (diffToEnd > 0) {
       isOvertime = false;
       countdownStr = this.formatDuration(diffToEnd);
       
       if (diffFromStart > 0) {
+        // 已上班，按比例计算已赚金额
         earned = diffFromStart * wagePerSecond;
       } else {
         earned = 0;
@@ -165,16 +247,27 @@ Page({
       const overtimeSeconds = Math.abs(diffToEnd);
       countdownStr = this.formatDuration(overtimeSeconds);
       
-      earned = salary;
+      // 已拿满全日工资，计算额外损失金额
+      earned = totalSalary;
       loss = overtimeSeconds * wagePerSecond;
     }
 
+    // 按各薪资构成项占比计算分项已赚金额（日薪 = 基本工资 + 绩效 + 补贴）
+    const basicRatio = totalSalary > 0 ? (parseFloat(this.data.basicSalary) || 0) / totalSalary : 0;
+    const performanceRatio = totalSalary > 0 ? (parseFloat(this.data.performanceBonus) || 0) / totalSalary : 0;
+    const allowanceRatio = totalSalary > 0 ? (parseFloat(this.data.allowance) || 0) / totalSalary : 0;
+    
     this.setData({
       isOvertime,
       countdownStr,
       earnedMoney: earned.toFixed(2),
       lossMoney: loss.toFixed(2),
-      tickAnimation: true
+      tickAnimation: true,
+      
+      // 保存各构成项的已赚金额，用于明细展示
+      earnedBasic: (earned * basicRatio).toFixed(2),
+      earnedPerformance: (earned * performanceRatio).toFixed(2),
+      earnedAllowance: (earned * allowanceRatio).toFixed(2)
     });
     
     setTimeout(() => {

@@ -5,11 +5,37 @@
   </view>
 
   <view class="card config-card" wx:if="{{!isRunning}}">
-    <view class="form-item">
-      <view class="label-row">
-        <text class="label">日薪 (元)</text>
+    <view class="salary-header" bindtap="toggleSalaryDetail">
+      <text class="label">薪资构成设置</text>
+      <text class="toggle-icon">{{showSalaryDetail ? '▼' : '▶'}}</text>
+    </view>
+    
+    <view class="total-salary-row">
+      <text class="total-label">日薪总计: </text>
+      <text class="total-value">¥ {{totalSalary}}</text>
+    </view>
+    
+    <view class="salary-detail" wx:if="{{showSalaryDetail}}">
+      <view class="form-item">
+        <view class="label-row">
+          <text class="label">基本工资 (元)</text>
+        </view>
+        <input type="digit" class="input-money" placeholder="0.00" bindinput="bindBasicSalaryInput" value="{{basicSalary}}" />
       </view>
-      <input type="digit" class="input-money" placeholder="0.00" bindinput="bindSalaryInput" value="{{salary}}" />
+
+      <view class="form-item">
+        <view class="label-row">
+          <text class="label">绩效奖金 (元)</text>
+        </view>
+        <input type="digit" class="input-money" placeholder="0.00" bindinput="bindPerformanceBonusInput" value="{{performanceBonus}}" />
+      </view>
+
+      <view class="form-item">
+        <view class="label-row">
+          <text class="label">补贴 (元)</text>
+        </view>
+        <input type="digit" class="input-money" placeholder="0.00" bindinput="bindAllowanceInput" value="{{allowance}}" />
+      </view>
     </view>
 
     <view class="divider"></view>
@@ -58,6 +84,21 @@
       <view class="money-amount-row">
         <text class="symbol">¥</text>
         <text class="amount {{tickAnimation ? 'pulse' : ''}}">{{earnedMoney}}</text>
+      </view>
+      
+      <view class="salary-breakdown">
+        <view class="breakdown-item">
+          <text class="breakdown-label">基本工资</text>
+          <text class="breakdown-value">¥ {{earnedBasic || '0.00'}}</text>
+        </view>
+        <view class="breakdown-item" wx:if="{{performanceShow}}">
+          <text class="breakdown-label">绩效奖金</text>
+          <text class="breakdown-value">¥ {{earnedPerformance || '0.00'}}</text>
+        </view>
+        <view class="breakdown-item" wx:if="{{allowanceShow}}">
+          <text class="breakdown-label">补贴</text>
+          <text class="breakdown-value">¥ {{earnedAllowance || '0.00'}}</text>
+        </view>
       </view>
     </view>
 
