@@ -8,8 +8,26 @@
     <view class="form-item">
       <view class="label-row">
         <text class="label">日薪 (元)</text>
+        <view class="detail-toggle" bindtap="toggleSalaryDetail">
+          {{showSalaryDetail ? '收起详情' : '展开详情'}}
+        </view>
       </view>
-      <input type="digit" class="input-money" placeholder="0.00" bindinput="bindSalaryInput" value="{{salary}}" />
+      <input type="number" class="input-money" placeholder="0.00" bindinput="bindSalaryInput" value="{{salary}}" />
+    </view>
+
+    <view class="salary-detail-components" wx:if="{{showSalaryDetail}}">
+      <view class="form-item component-item">
+        <text class="label component-label">基本工资 (元)</text>
+        <input type="number" class="input-money component-input" placeholder="0.00" data-field="baseSalary" bindinput="bindComponentInput" value="{{salaryComponents.baseSalary}}" />
+      </view>
+      <view class="form-item component-item">
+        <text class="label component-label">绩效 (元)</text>
+        <input type="number" class="input-money component-input" placeholder="0.00" data-field="performance" bindinput="bindComponentInput" value="{{salaryComponents.performance}}" />
+      </view>
+      <view class="form-item component-item">
+        <text class="label component-label">补贴 (元)</text>
+        <input type="number" class="input-money component-input" placeholder="0.00" data-field="subsidy" bindinput="bindComponentInput" value="{{salaryComponents.subsidy}}" />
+      </view>
     </view>
 
     <view class="divider"></view>
@@ -58,6 +76,21 @@
       <view class="money-amount-row">
         <text class="symbol">¥</text>
         <text class="amount {{tickAnimation ? 'pulse' : ''}}">{{earnedMoney}}</text>
+      </view>
+      
+      <view class="salary-detail-breakdown" wx:if="{{salaryComponents.baseSalary || salaryComponents.performance || salaryComponents.subsidy}}">
+        <view class="detail-row">
+          <text class="detail-label">基本工资</text>
+          <text class="detail-value {{tickAnimation ? 'pulse' : ''}}">+ ¥{{earnedBaseSalary}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">绩效</text>
+          <text class="detail-value {{tickAnimation ? 'pulse' : ''}}">+ ¥{{earnedPerformance}}</text>
+        </view>
+        <view class="detail-row">
+          <text class="detail-label">补贴</text>
+          <text class="detail-value {{tickAnimation ? 'pulse' : ''}}">+ ¥{{earnedSubsidy}}</text>
+        </view>
       </view>
     </view>
 
