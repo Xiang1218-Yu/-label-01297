@@ -1,0 +1,102 @@
+<view class="container">
+  <!-- 页面头部 - 与首页风格一致 -->
+  <view class="header">
+    <text class="title">薪资构成设置</text>
+    <text class="subtitle">自定义您的日薪明细</text>
+  </view>
+
+  <!-- 模式切换 -->
+  <view class="card modeSwitchCard">
+    <view class="modeSwitchRow">
+      <view class="modeInfo">
+        <text class="modeTitle">详细薪资构成</text>
+        <text class="modeDesc">自定义基本工资、绩效、补贴等项目</text>
+      </view>
+      <switch checked="{{enableDetailedSalary}}" bindchange="toggleSalaryMode" color="#2f80ed" />
+    </view>
+  </view>
+
+  <!-- 简单模式：直接输入总日薪 -->
+  <view class="card" wx:if="{{!enableDetailedSalary}}">
+    <view class="sectionTitle">日薪设置</view>
+    <view class="simpleInputRow">
+      <text class="currencySymbol">¥</text>
+      <input 
+        type="digit" 
+        class="simpleInput" 
+        placeholder="请输入日薪金额" 
+        value="{{totalSalary}}"
+        bindinput="bindTotalSalaryInput"
+      />
+    </view>
+    <text class="inputHint">输入您的每日总薪资</text>
+  </view>
+
+  <!-- 详细模式：分项输入 -->
+  <view class="card" wx:if="{{enableDetailedSalary}}">
+    <view class="sectionHeader">
+      <text class="sectionTitle">薪资构成明细</text>
+      <view class="addBtn" bindtap="addCustomComponent">
+        <text class="addIcon">+</text>
+        <text class="addText">添加</text>
+      </view>
+    </view>
+
+    <!-- 薪资项目列表 -->
+    <view class="componentList">
+      <view 
+        class="componentItem {{item.isCustom ? 'customItem' : ''}}" 
+        wx:for="{{salaryComponents}}" 
+        wx:key="id"
+      >
+        <view class="itemLeft">
+          <view class="itemIcon" style="background-color: {{item.color}}20; color: {{item.color}};">
+            <text>{{item.icon}}</text>
+          </view>
+          <text class="itemName">{{item.name}}</text>
+        </view>
+        <view class="itemRight">
+          <view class="itemInputWrap">
+            <text class="itemCurrency">¥</text>
+            <input 
+              type="digit" 
+              class="itemInput" 
+              placeholder="0.00" 
+              value="{{item.amount}}"
+              data-index="{{index}}"
+              bindinput="bindComponentInput"
+            />
+          </view>
+          <!-- 删除按钮（仅自定义项目显示） -->
+          <view 
+            class="deleteBtn" 
+            wx:if="{{item.isCustom}}"
+            data-index="{{index}}"
+            bindtap="deleteComponent"
+          >
+            <text class="deleteIcon">×</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 总计展示 -->
+  <view class="totalCard">
+    <view class="totalRow">
+      <text class="totalLabel">日薪合计</text>
+      <view class="totalAmountWrap">
+        <text class="totalCurrency">¥</text>
+        <text class="totalAmount">{{calculatedTotal}}</text>
+      </view>
+    </view>
+    <text class="totalHint">{{enableDetailedSalary ? '各项薪资累加计算' : '直接输入的日薪金额'}}</text>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="footer">
+    <button class="saveBtn" bindtap="saveSalaryConfig" hover-class="btn-hover">
+      保存设置
+    </button>
+  </view>
+</view>
